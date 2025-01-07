@@ -3,6 +3,7 @@ from utils import Trainer, batch_end_callback
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, Dataset
+import matplotlib.pyplot as plt
 
 
 def load_data():
@@ -19,7 +20,7 @@ def load_data():
 
 def test(model, test_data, criterion):
     model.eval()
-    
+
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     test_loader = DataLoader(test_data, batch_size=256, shuffle=False)
     correct = 0
@@ -51,5 +52,22 @@ if __name__ == '__main__':
     for epoch in range(epoch_num):
         trainer.run()
         test_loss, accuracy = test(model, test_data, criterion)
-        print(f'Epoch [{epoch+1}]/[{epoch_num}] Test Loss: {test_loss:.4f}, Test Accuracy: {accuracy:.4f}%')
-        
+        print(f'Epoch [{epoch+1}]/[{epoch_num}] Test Loss: {
+              test_loss:.4f}, Test Accuracy: {accuracy:.4f}%')
+
+    # Visualize some examples
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    test_loader = DataLoader(test_data, batch_size=256, shuffle=False)
+    model.eval()
+    images, labels = next(iter(test_loader))
+    images, labels = images.to(device), labels.to(device)
+    outputs = model(images)
+    _, predicted = torch.max(outputs.data, 1)
+
+    plt.figure(figsize=(6, 3), constrained_layout=True)
+    for i in range(12):
+        plt.subplot(2, 6, i+1)
+        plt.imshow(images[i].cpu().numpy().squeeze(), cmap='gray')
+        plt.axis('off')
+        plt.title("P: %d, L: %d" % (predicted[i], labels[i]))
+    plt.show()
