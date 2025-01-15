@@ -8,6 +8,17 @@
 - 掌握均方误差损失函数
 - 完成基于logistic/softmax regression的分类模型
 
+## 使用
+
+1. 环境配置: 一个 torch + cuda 环境
+2. sklearn 库来运行感知机的代码
+3. 准备好 MNIST 数据集 `data/raw/MNIST`. 如果你没有, 也会自动下载.
+4. 运行
+
+```py
+python test_FNN.py
+```
+
 ## 从感知机出发
 
 ### Preceptron
